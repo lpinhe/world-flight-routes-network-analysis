@@ -108,10 +108,10 @@ centr_degree(net, mode="in", normalized=T)
 #$theoretical_max
 #[1] 11727200
 
+
 # Closeness (centrality based on distance to others in the graph)
 close <- closeness(net, mode="all", weights=NA)
 sort(close, decreasing=TRUE)[1:20]
-
 #FRA          CDG          LHR          AMS          DXB          LAX          JFK          YYZ          IST 
 #9.583042e-06 9.578269e-06 9.574234e-06 9.565716e-06 9.564985e-06 9.557123e-06 9.552832e-06 9.543442e-06 9.539072e-06 
 #ORD          PEK          MUC          FCO          NRT          EWR          DOH          ICN          ZRH 
@@ -126,6 +126,12 @@ centr_clo(net, mode="all", normalized=T)
 #$theoretical_max
 #[1] 1711.75
 
+# check degree level of top 20 closeness
+degree(net, v=c("FRA","CDG","LHR","AMS", "DXB", "LAX" , "JFK" , "YYZ", "IST", "ORD", "PEK", "MUC", "FCO", "NRT", "EWR", "DOH", "ICN", "ZRH", "MAD" , "IAH"))
+#FRA CDG LHR AMS DXB LAX JFK YYZ IST ORD PEK MUC FCO NRT EWR DOH ICN ZRH MAD IAH 
+#477 470 342 463 370 297 322 293 457 409 412 380 316 206 305 234 262 273 314 337
+
+
 # Eigenvector (centrality proportional to the sum of connection centralities)
 eigen_centrality(net, directed=T, weights=NA)
 sort(eigen_centrality(net, directed=T, weights=NA)$vector, decreasing=TRUE)[1:20]
@@ -139,6 +145,12 @@ sort(eigen_centrality(net, directed=T, weights=NA)$vector, decreasing=TRUE)[1:20
 centr_eigen(net, directed=T, normalized=T)
 #$value
 #[1] 69.28393
+
+# check degree level of top 20 eigenvector
+degree(net, v=c("AMS","FRA","CDG","MUC", "LHR", "FCO" , "IST" , "BCN", "ZRH", "MAD", "BRU", "DUB", "DUS", "LGW", "VIE", "MAN", "CPH", "JFK", "MXP" , "DXB"))
+#AMS FRA CDG MUC LHR FCO IST BCN ZRH MAD BRU DUB DUS LGW VIE MAN CPH JFK MXP DXB 
+#463 477 470 380 342 316 457 326 273 314 293 288 294 330 275 290 241 322 218 370
+
 
 # Betweenness (centrality based on a broker position connecting others)
 bet <- betweenness(net, directed=T, weights=NA)
@@ -155,10 +167,16 @@ centr_betw(net, directed=T, normalized=T)
 #$theoretical_max
 #[1] 40130485248
 
+# check degree level of top 20 betweenness
+degree(net, v=c("ANC","LAX","CDG","DXB", "FRA", "PEK" , "ORD" , "SEA", "AMS", "YYZ", "IST", "GRU", "LHR", "NRT", "SYD", "SIN", "BNE", "DME", "ATL" , "YUL"))
+#ANC LAX CDG DXB FRA PEK ORD SEA AMS YYZ IST GRU LHR NRT SYD SIN BNE DME ATL YUL 
+#68 297 470 370 477 412 409 184 463 293 457 182 342 206 168 250 116 378 433 185 
+
 
 # Clustering
 hs <- hub_score(net)$vector
 as <- authority_score(net)$vector
+
 
 # Hubs and Authorities
 par(mfrow=c(1,2))
@@ -191,6 +209,7 @@ sort(SCC$membership, decreasing=TRUE)[1:30]
 gs <- induced.subgraph(net, SCC$membership==order(-SCC$csize)[1])
 plot(gs, vertex.size=as*30, vertex.color="light blue",vertex.label=NA, edge.arrow.size=.4, edge.color="black",edge.width=E(net)$weight/10,edge.arrow.width=0.5, edge.curved=.1)
 
+
 # articulation points
 # for the whole network:
 net2 <- net
@@ -204,6 +223,7 @@ V(gs2)$color = "black"
 articulation.points(gs2)   # 358 nodes
 V(gs2)[articulation.points(gs2)]$color = "red"
 plot.igraph(gs2, vertex.size=3, vertex.label=NA,edge.arrow.width=0.3, edge.color="light blue", edge.width = 0.1, edge.curved=.1, main="Articulation Points")
+
 
 # Assortativity and Homophily
 routes_new <- routes
